@@ -61,3 +61,6 @@ Temporary Items
 
 ### Zed ###
 .zed/
+
+bin/
+store/

@@ -1,5 +1,7 @@
 .DEFAULT_GOAL := help
 
+APP =
+
 .PHONY: help
 help: ## Display this help screen
 	@echo "Available targets:"
@@ -11,6 +13,10 @@ lint: ## Lint and tidy
 	go mod verify
 	golangci-lint run --fix -v -c .golangci.yaml
 
-.PHONY: test
-test: ## Run tests
-	go test -race -shuffle=on -count=1 ./...
+.PHONY: build-test
+test: ## Builds and tests using maelstrom
+	GOOS=linux GOARCH=amd64 go build -o bin/$(APP) ./cmd/$(APP)
+	docker run --rm \
+		-v '$(shell pwd):/app' \
+		maelstrom \
+		maelstrom test -w $(APP) --bin ./bin/$(APP) $(ARGS)
