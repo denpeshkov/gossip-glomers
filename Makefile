@@ -9,14 +9,8 @@ help: ## Display this help screen
 lint: ## Lint and tidy
 	go mod tidy -v
 	go mod verify
-	golangci-lint config verify
 	golangci-lint run --fix -v -c .golangci.yaml
 
 .PHONY: test
 test: ## Run tests
-	go test -race -count=1 ./...
-
-.PHONY: test/cover
-test/cover: ## Run tests with coverage
-	go test -race -count=1 ./... -coverprofile=/tmp/cover.out ./...
-	go tool cover -html=/tmp/cover.out
+	go test -race -shuffle=on -count=1 ./...

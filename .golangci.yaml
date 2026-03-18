@@ -18,7 +18,6 @@ linters:
     - errname
     - errorlint
     - exhaustive
-    - exhaustruct
     - exptostd
     - forcetypeassert
     - gocheckcompilerdirectives
@@ -82,4 +81,4 @@ formatters:
   settings:
     goimports:
       local-prefixes:
-        - github.com/denpeshkov/go-template
+        - github.com/denpeshkov/gossip-glomers
