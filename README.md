@@ -37,3 +37,8 @@ To perform an `add` request, each node executes a CAS loop to update the shared 
 The final value is the maximum observed across all nodes. Since the counter is grow-only, we know that the "most correct" value is always the largest one, as it represents the state that has incorporated the most increments
 
 ## Solution using CRDTs
+
+Since we are using a sequentially-consistent KV store, there is no global total order; only the order of operations for each individual node is preserved
+
+This approach uses a G-Counter CRDT where each node maintains its own counter in a KV store
+The total value is the sum of all counters, eliminating the need for a global shared counter and CAS operation
