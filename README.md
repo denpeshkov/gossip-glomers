@@ -1,4 +1,39 @@
 # Gossip Glomers
 
-A series of distributed systems challenges by Fly.io.
-See the official site: https://fly.io/dist-sys/
+Solutions to [Gossip Glomers](https://fly.io/dist-sys/), a series of distributed systems challenges brought by Fly.io and Kyle Kingsbury
+
+# Challenge #2: Unique ID Generation
+
+My solution uses UUIDs to ensure global uniqueness.
+
+Alternative approaches:
+
+- ULID
+- Snowflake: Or other k-ordered ID algorithms
+- Each node generates IDs in the format `{node_id}-{local_counter}` to avoid collisions without coordination
+
+# Challenge #3d: Efficient Broadcast, Part I
+
+This solution uses a full-mesh topology. When a node receives a `broadcast` request from a client, it immediately sends that message to every other node in the cluster
+
+To achieve resilient delivery, the node uses goroutines trying to send the request until the ack is received
+
+Because this specific challenge assumes that node can't fail, we do not need to re-broadcast (gossip) the request from peer to peer. This limits the total traffic for a single client broadcast to O(n) messages
+
+# Challenge #3e: Efficient Broadcast, Part II
+
+Almost the same solution as the previous one. Upon receiving a `broadcast` request, the node simply appends the message to a pending buffer
+
+A background gossip goroutine periodically flushes this buffer, sending all accumulated messages to peers in a single batch.
+
+# Challenge #4: Grow-Only Counter
+
+## Solution using shared counter and CAS
+
+Since we are using a sequentially-consistent KV store, there is no global total order; only the order of operations for each individual node is preserved
+
+To perform an `add` request, each node executes a CAS loop to update the shared counter value
+
+The final value is the maximum observed across all nodes. Since the counter is grow-only, we know that the "most correct" value is always the largest one, as it represents the state that has incorporated the most increments
+
+## Solution using CRDTs
