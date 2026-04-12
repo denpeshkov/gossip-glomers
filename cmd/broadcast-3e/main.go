@@ -24,11 +24,10 @@ func main() {
 }
 
 type node struct {
-	n          *maelstrom.Node
-	neighbours []string
-	mu         sync.RWMutex
-	msgs       map[float64]struct{}
-	pending    map[float64]struct{}
+	n       *maelstrom.Node
+	mu      sync.RWMutex
+	msgs    map[float64]struct{}
+	pending map[float64]struct{}
 }
 
 func newNode() *node {
@@ -130,7 +129,7 @@ func (n *node) rpc(dst string, msgs []float64) error {
 	return err
 }
 
-// sample returns a random sample of k neigbours.
+// sample returns a random sample of k neighbours.
 func (n *node) sample(k int) []string {
 	nodes := slices.Clone(n.n.NodeIDs())
 	nodes = slices.DeleteFunc(nodes, func(id string) bool { return id == n.n.ID() })

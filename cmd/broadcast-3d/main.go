@@ -23,10 +23,9 @@ func main() {
 }
 
 type node struct {
-	n          *maelstrom.Node
-	neighbours []string
-	mu         sync.RWMutex
-	msgs       map[float64]struct{}
+	n    *maelstrom.Node
+	mu   sync.RWMutex
+	msgs map[float64]struct{}
 }
 
 func newNode() *node {
