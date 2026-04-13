@@ -42,3 +42,19 @@ Since we are using a sequentially-consistent KV store, there is no global total 
 
 This approach uses a G-Counter CRDT where each node maintains its own counter in a KV store
 The total value is the sum of all counters, eliminating the need for a global shared counter and CAS operation
+
+# Challenge #5a: Single-Node Kafka-Style Log
+
+Store message logs in a local `map`, using the log name as the key
+
+Store committed offsets in a separate local `map` keyed by the log name
+
+Both maps are protected by the mutex
+
+# Challenge #5b: Single-Node Kafka-Style Log
+
+Each log is stored in a linearizable KV store using the key format `log_{key}`
+
+Committed offsets are stored in the same linearizable KV store using the key format `committed_offsets_{key}`
+
+Since multiple clients are accessing the same keys concurrently, we use a CAS operation within a retry loop to ensure atomic updates to both logs and offsets
