@@ -58,3 +58,13 @@ Each log is stored in a linearizable KV store using the key format `log_{key}`
 Committed offsets are stored in the same linearizable KV store using the key format `committed_offsets_{key}`
 
 Since multiple clients are accessing the same keys concurrently, we use a CAS operation within a retry loop to ensure atomic updates to both logs and offsets
+
+# Challenge #5c: Efficient Kafka-Style Log
+
+Each log is stored in a linearizable KV store using the key format `log_{key}`
+
+Committed offsets are stored in the same linearizable KV store using the key format `committed_offsets_{key}`
+
+In the previous challenge, we used CAS to address concurrency issues when writing to the KV store
+In this challenge, requests are routed based on the hash of the key to the same node (primary), ensuring that there are no concurrent updates to the same key
+Only one node performs updates, and we use a mutex to synchronize local goroutines
