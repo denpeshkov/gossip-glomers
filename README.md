@@ -68,3 +68,7 @@ Committed offsets are stored in the same linearizable KV store using the key for
 In the previous challenge, we used CAS to address concurrency issues when writing to the KV store
 In this challenge, requests are routed based on the hash of the key to the same node (primary), ensuring that there are no concurrent updates to the same key
 Only one node performs updates, and we use a mutex to synchronize local goroutines
+
+# Challenge #6a: Single-Node, Totally-Available Transactions
+
+Use a `map` protected by lock to serialize every transaction agains the k/v store
