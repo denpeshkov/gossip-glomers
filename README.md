@@ -72,3 +72,17 @@ Only one node performs updates, and we use a mutex to synchronize local goroutin
 # Challenge #6a: Single-Node, Totally-Available Transactions
 
 Use a `map` protected by lock to serialize every transaction agains the k/v store
+
+# Challenge #6: Multi-Node, Strictly-Serializable Transactions
+
+## Solution using Datomic-style transactional store
+
+This solution implements a simplified Datomic-style architecture using an immutable state tree:
+
+- Root Pointer: A single entry in the linearizable KV store that tracks the head of the current state
+- Indirection Layer: The root points to a state map which maps keys to unique thunk IDs
+- Lazy Thunks: Each thunk acts as a lazy future that resolves to a specific value in the KV store
+
+Transactions are performed by locally computing a new state map, persisting new thunks, and using a CAS to update the root pointer
+
+See the [Maelstrom Datomic Transactor](https://github.com/jepsen-io/maelstrom/blob/main/doc/05-datomic/index.md) for details
